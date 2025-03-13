@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || 'missing-api-key',
 });
 
 export async function POST(request: Request) {
@@ -14,6 +14,14 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'Please provide a valid list of ingredients' },
         { status: 400 }
+      );
+    }
+
+    // Check if API key is properly configured
+    if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'missing-api-key') {
+      return NextResponse.json(
+        { error: 'OpenAI API key is not configured. Please set the OPENAI_API_KEY environment variable.' },
+        { status: 500 }
       );
     }
 
