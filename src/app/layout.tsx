@@ -2,7 +2,7 @@ import './globals.css';
 
 export const metadata = {
   title: 'ChefIA',
-  description: 'Your smart kitchen assistant',
+  description: 'Your really smart kitchen assistant',
 }
 
 export default function RootLayout({
