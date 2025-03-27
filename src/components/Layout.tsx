@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut, isLoading } = useAuth();
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -24,6 +26,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     if (path === '/' && pathname === '/') return true;
     if (path !== '/' && pathname.startsWith(path)) return true;
     return false;
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
@@ -53,6 +59,40 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </Link>
                 ))}
               </div>
+            </div>
+            
+            {/* Authentication buttons */}
+            <div className="hidden sm:ml-6 sm:flex sm:items-center">
+              {isLoading ? (
+                <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse"></div>
+              ) : user ? (
+                <div className="ml-3 relative flex items-center">
+                  <span className="text-sm text-gray-700 mr-2">
+                    {user.email}
+                  </span>
+                  <button
+                    onClick={handleSignOut}
+                    className="text-sm font-medium text-primary-600 hover:text-primary-800"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <Link
+                    href="/auth/login"
+                    className="text-sm font-medium text-primary-600 hover:text-primary-800"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="px-3 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
             </div>
             
             {/* Mobile menu button */}
@@ -118,6 +158,43 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {item.name}
               </Link>
             ))}
+            
+            {/* Mobile auth buttons */}
+            <div className="border-t border-gray-200 pt-4 pb-3">
+              {isLoading ? (
+                <div className="flex items-center px-4">
+                  <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse"></div>
+                  <div className="ml-3 h-4 w-32 bg-gray-200 animate-pulse rounded"></div>
+                </div>
+              ) : user ? (
+                <div className="flex flex-col px-4">
+                  <div className="text-base font-medium text-gray-800 mb-1">{user.email}</div>
+                  <button
+                    onClick={handleSignOut}
+                    className="text-sm text-primary-600 hover:text-primary-800 text-left"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-3 px-4">
+                  <Link
+                    href="/auth/login"
+                    className="text-base font-medium text-primary-600 hover:text-primary-800"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="inline-block px-4 py-2 rounded-md text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </nav>

@@ -3,15 +3,24 @@
 import React from 'react';
 import Link from 'next/link';
 import Layout from '../components/Layout';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Home() {
+  const { user, isLoading } = useAuth();
+
+  // Function to handle navigation based on auth state
+  const getFeatureLink = (path: string) => {
+    if (isLoading) return '#'; // Don't navigate while checking auth status
+    return user ? path : '/auth/login';
+  };
+
   return (
     <Layout>
       <div className="max-w-5xl mx-auto">
         {/* Hero Section */}
         <div className="text-center mb-16 pt-8">
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Your Kitchen Assistant
+            Your Smart Kitchen Assistant
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Track your ingredients, discover recipes based on what you have, and customize your food preferences.
@@ -33,7 +42,7 @@ export default function Home() {
                 Keep track of all your ingredients and never run out of essentials again.
               </p>
               <Link 
-                href="/inventory" 
+                href={getFeatureLink('/inventory')}
                 className="inline-flex items-center text-primary-600 font-medium hover:text-primary-800"
               >
                 Manage Inventory
@@ -57,7 +66,7 @@ export default function Home() {
                 Generate delicious recipes based on the ingredients you already have.
               </p>
               <Link 
-                href="/recipes" 
+                href={getFeatureLink('/recipes')}
                 className="inline-flex items-center text-primary-600 font-medium hover:text-primary-800"
               >
                 Discover Recipes
@@ -82,7 +91,7 @@ export default function Home() {
                 Set your dietary restrictions and cuisine preferences for personalized recipes.
               </p>
               <Link 
-                href="/preferences" 
+                href={getFeatureLink('/preferences')}
                 className="inline-flex items-center text-primary-600 font-medium hover:text-primary-800"
               >
                 Set Preferences
@@ -100,12 +109,29 @@ export default function Home() {
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             Begin by adding ingredients to your inventory, then generate recipes based on what you have.
           </p>
-          <Link
-            href="/inventory"
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors"
-          >
-            Start Now
-          </Link>
+          {user ? (
+            <Link
+              href="/inventory"
+              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+            >
+              Start Now
+            </Link>
+          ) : (
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link
+                href="/auth/signup"
+                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+              >
+                Create an Account
+              </Link>
+              <Link
+                href="/auth/login"
+                className="inline-flex items-center justify-center px-6 py-3 border border-primary-600 text-base font-medium rounded-md text-primary-600 bg-white hover:bg-primary-50 transition-colors"
+              >
+                Log In
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </Layout>
