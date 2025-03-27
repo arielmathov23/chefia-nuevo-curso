@@ -11,7 +11,7 @@ export default function Home() {
         {/* Hero Section */}
         <div className="text-center mb-16 pt-8">
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Your Smart Kitchen Assistant
+            Your Kitchen Assistant
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Track your ingredients, discover recipes based on what you have, and customize your food preferences.
